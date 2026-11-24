@@ -1,4 +1,4 @@
-import type { CategoryMeta, MarketTickerItem } from '../types/news';
+import type { CategoryMeta, ChannelDirectorySection, MarketTickerItem } from '../types/news';
 
 export const CATEGORIES: CategoryMeta[] = [
   {
@@ -6,7 +6,7 @@ export const CATEGORIES: CategoryMeta[] = [
     label: 'Front Page',
     accent: '#f43f5e',
     badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-    description: 'Live daily English briefing from Nepal, India, US, and global desks',
+    description: 'Live global daily feed across 60+ US, UK, European, Nepali, Indian & Australian outlets',
   },
   {
     id: 'nepal',
@@ -20,7 +20,7 @@ export const CATEGORIES: CategoryMeta[] = [
     label: 'India',
     accent: '#f97316',
     badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-    description: 'Times of India & NDTV live top dispatches across South Asia',
+    description: 'Times of India & NDTV live top coverage across India & South Asia',
   },
   {
     id: 'business',
@@ -30,18 +30,46 @@ export const CATEGORIES: CategoryMeta[] = [
     description: 'NDTV Profit, Fox Business, Wall Street Journal Markets & Times of India Business',
   },
   {
-    id: 'politics',
-    label: 'Right-Wing & US',
+    id: 'us-tv',
+    label: 'US Broadcast',
     accent: '#ef4444',
     badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-    description: 'Fox News, New York Post, The Daily Wire, National Review, Washington Examiner & Breitbart',
+    description: "Fox News, Fox Business, Newsmax, OANN & Real America's Voice",
+  },
+  {
+    id: 'us-print',
+    label: 'US Print & Mags',
+    accent: '#fb7185',
+    badgeClass: 'bg-pink-500/15 text-pink-400 border-pink-500/30',
+    description: 'New York Post, Washington Times, WSJ Opinion, National Review, Reason, Commentary, First Things & more',
+  },
+  {
+    id: 'us-digital',
+    label: 'US Digital',
+    accent: '#f43f5e',
+    badgeClass: 'bg-red-500/15 text-red-400 border-red-500/30',
+    description: 'Daily Wire, Breitbart, Daily Caller, Washington Examiner, Free Beacon, Federalist, Blaze, Epoch Times & more',
+  },
+  {
+    id: 'uk',
+    label: 'UK & Ireland',
+    accent: '#6366f1',
+    badgeClass: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
+    description: 'The Telegraph, Daily Mail, GB News, TalkTV, The Spectator, Daily Express, The Sun, ConservativeHome & Spiked',
+  },
+  {
+    id: 'intl',
+    label: 'Europe · CA · AU',
+    accent: '#14b8a6',
+    badgeClass: 'bg-teal-500/15 text-teal-400 border-teal-500/30',
+    description: 'Le Figaro, Valeurs Actuelles, Die Welt, Bild, Il Giornale, ABC Spain, National Post, Toronto Sun, Sky News AU & more',
   },
   {
     id: 'world',
     label: 'World',
     accent: '#38bdf8',
     badgeClass: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
-    description: 'The New York Times, Wall Street Journal, Fox News World & NDTV World',
+    description: 'The New York Times, Fox News World & NDTV World international headlines',
   },
   {
     id: 'technology',
@@ -55,20 +83,121 @@ export const CATEGORIES: CategoryMeta[] = [
     label: 'Sports',
     accent: '#10b981',
     badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    description: 'Cricket, football, global championships & sports headlines',
+    description: 'Cricket, football, championships & global sports coverage',
   },
 ];
 
 export const SOURCE_GROUPS = [
-  'All Sources',
+  'All Channels',
   'Nepal Press',
   'New York Times',
-  'Times of India',
-  'NDTV Profit',
-  'Fox News',
-  'Right-Wing Media',
-  'WSJ',
+  'India & Profit',
+  'US Broadcast',
+  'US Print & Mags',
+  'US Digital',
+  'UK & Ireland',
+  'Europe · CA · AU',
 ] as const;
+
+export const CHANNEL_DIRECTORY: ChannelDirectorySection[] = [
+  {
+    title: 'Nepal, India & Global Broadsheets',
+    group: 'Nepal Press',
+    channels: [
+      { name: 'The Kathmandu Post', region: 'Nepal', note: 'Leading Nepali English national daily' },
+      { name: 'OnlineKhabar', region: 'Nepal', note: 'High-traffic Nepali English digital portal' },
+      { name: 'Nepali Times', region: 'Nepal', note: 'Weekly Nepali English journalism & analysis' },
+      { name: 'Khabarhub', region: 'Nepal', note: 'Breaking Nepali English news desk' },
+      { name: 'The Rising Nepal', region: 'Nepal', note: "Nepal's oldest English-language daily" },
+      { name: 'New York Times', region: 'US / Global', note: 'Global breaking news, world & tech' },
+      { name: 'Times of India', region: 'India', note: "India's largest English daily" },
+      { name: 'NDTV Profit', region: 'India', note: 'Indian markets, finance & business news' },
+      { name: 'NDTV', region: 'India', note: 'Breaking Indian national headlines' },
+      { name: 'NDTV World', region: 'Global', note: 'International news desk' },
+    ],
+  },
+  {
+    title: '1. United States: Television & Broadcast Networks',
+    group: 'US Broadcast',
+    channels: [
+      { name: 'Fox News', region: 'US', note: 'Top-rated US cable news & conservative digital publisher' },
+      { name: 'Fox Business', region: 'US', note: 'Markets, business & economic news' },
+      { name: 'Newsmax', region: 'US', note: 'Conservative cable TV & digital portal' },
+      { name: 'OANN', region: 'US', note: 'One America News Network cable & digital' },
+      { name: "Real America's Voice", region: 'US', note: 'Right-wing streaming TV & political commentary' },
+    ],
+  },
+  {
+    title: '2. United States: Newspapers & Magazines',
+    group: 'US Print & Mags',
+    channels: [
+      { name: 'New York Post', region: 'US', note: 'Major conservative daily & high-traffic digital news' },
+      { name: 'The Washington Times', region: 'US', note: 'Washington, D.C. conservative daily newspaper' },
+      { name: 'WSJ Opinion', region: 'US', note: 'Wall Street Journal editorial & opinion board' },
+      { name: 'Wall Street Journal', region: 'US', note: 'Global markets & finance desk' },
+      { name: 'National Review', region: 'US', note: 'Influential conservative magazine & commentary' },
+      { name: 'The American Spectator', region: 'US', note: 'Conservative political magazine & website' },
+      { name: 'Reason', region: 'US', note: 'Libertarian & free-market news magazine' },
+      { name: 'Commentary', region: 'US', note: 'Neoconservative politics, foreign policy & culture' },
+      { name: 'The American Conservative', region: 'US', note: 'Foreign policy restraint & traditionalism' },
+      { name: 'First Things', region: 'US', note: 'Religion, culture & public life journal' },
+    ],
+  },
+  {
+    title: '3. United States: Digital News & Commentary Sites',
+    group: 'US Digital',
+    channels: [
+      { name: 'The Daily Wire', region: 'US', note: 'Major conservative digital news & media company' },
+      { name: 'Breitbart News', region: 'US', note: 'Syndicated right-wing news & commentary' },
+      { name: 'The Daily Caller', region: 'US', note: 'Right-wing news & opinion site' },
+      { name: 'Washington Examiner', region: 'US', note: 'Conservative political journalism & magazine' },
+      { name: 'Washington Free Beacon', region: 'US', note: 'Conservative investigative political journalism' },
+      { name: 'The Federalist', region: 'US', note: 'Politics, policy & culture online magazine' },
+      { name: 'Townhall', region: 'US', note: 'Conservative commentary & news (Salem Media)' },
+      { name: 'Blaze Media', region: 'US', note: 'TheBlaze conservative digital news network' },
+      { name: 'The Epoch Times', region: 'US', note: 'Multi-language right-wing newspaper & digital' },
+      { name: 'The Daily Signal', region: 'US', note: 'Heritage Foundation conservative news' },
+      { name: 'The Dispatch', region: 'US', note: 'Center-right fact-based reporting & commentary' },
+      { name: 'Hot Air', region: 'US', note: 'Center-right & conservative political blog' },
+      { name: 'RedState', region: 'US', note: 'Conservative political news & commentary' },
+      { name: 'PJ Media', region: 'US', note: 'Right-wing political commentary & news' },
+      { name: 'The Western Journal', region: 'US', note: 'Conservative news & commentary publisher' },
+      { name: 'Just the News', region: 'US', note: 'Investigative & political news portal' },
+    ],
+  },
+  {
+    title: '4. United Kingdom & Ireland',
+    group: 'UK & Ireland',
+    channels: [
+      { name: 'The Telegraph', region: 'UK', note: "Britain's flagship center-right broadsheet" },
+      { name: 'Daily Mail', region: 'UK', note: 'MailOnline — right-leaning British tabloid' },
+      { name: 'GB News', region: 'UK', note: 'Right-leaning British TV & radio news channel' },
+      { name: 'TalkTV', region: 'UK', note: 'British conservative talk radio & TV network' },
+      { name: 'The Spectator', region: 'UK', note: "World's oldest conservative weekly magazine" },
+      { name: 'Daily Express', region: 'UK', note: 'Right-wing British national daily tabloid' },
+      { name: 'The Sun', region: 'UK', note: 'Major right-leaning British tabloid' },
+      { name: 'ConservativeHome', region: 'UK', note: 'Independent British center-right political site' },
+      { name: 'Spiked', region: 'UK', note: 'British libertarian / free-speech magazine' },
+    ],
+  },
+  {
+    title: '5. Europe, Canada & Australia',
+    group: 'Europe · CA · AU',
+    channels: [
+      { name: 'Le Figaro', region: 'France', note: "France's oldest mainstream center-right daily" },
+      { name: 'Valeurs Actuelles', region: 'France', note: 'Right-wing French weekly news magazine' },
+      { name: 'Die Welt', region: 'Germany', note: 'Major German center-right national daily' },
+      { name: 'Bild', region: 'Germany', note: 'High-circulation German right-leaning daily' },
+      { name: 'Il Giornale', region: 'Italy', note: 'Italian center-right national daily' },
+      { name: 'ABC (Spain)', region: 'Spain', note: 'Traditional conservative Spanish national daily' },
+      { name: 'National Post', region: 'Canada', note: 'Major Canadian center-right English daily' },
+      { name: 'Toronto Sun', region: 'Canada', note: 'Conservative Canadian daily tabloid' },
+      { name: 'The Post Millennial', region: 'Canada/US', note: 'Conservative online news magazine' },
+      { name: 'Sky News Australia', region: 'Australia', note: 'Right-leaning 24-hour Australian news TV' },
+      { name: 'The Australian', region: 'Australia', note: "Australia's primary center-right broadsheet" },
+    ],
+  },
+];
 
 export const CATEGORY_MAP: Record<string, CategoryMeta> = Object.fromEntries(
   CATEGORIES.map((c) => [c.id, c])
@@ -108,12 +237,12 @@ export const MARKET_TICKERS: MarketTickerItem[] = [
     sparkline: [6340, 6352, 6348, 6370, 6381, 6394, 6405, 6418],
   },
   {
-    symbol: 'NDX',
-    name: 'NASDAQ 100',
-    price: '22,904.15',
-    change: '+1.36%',
-    changePct: 1.36,
-    sparkline: [22490, 22580, 22610, 22690, 22740, 22810, 22865, 22904],
+    symbol: 'FTSE',
+    name: 'FTSE 100',
+    price: '8,842.70',
+    change: '+0.42%',
+    changePct: 0.42,
+    sparkline: [8802, 8795, 8810, 8818, 8824, 8830, 8836, 8842],
   },
   {
     symbol: 'GOLD',

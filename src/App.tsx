@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Flame, Mail, CheckCircle2, Sparkles, ArrowRight, Newspaper } from 'lucide-react';
+import { Flame, Mail, CheckCircle2, Sparkles, ArrowRight, Newspaper, ChevronDown } from 'lucide-react';
 import type { Article } from './types/news';
 import { CATEGORY_MAP } from './data/categories';
 import { useNews } from './context/NewsContext';
@@ -11,22 +11,40 @@ import { ArticleCard } from './components/ArticleCard';
 import { ArticleReaderModal } from './components/ArticleReaderModal';
 import { SearchCommandModal } from './components/SearchCommandModal';
 import { BookmarksDrawer } from './components/BookmarksDrawer';
+import { ChannelDirectoryModal } from './components/ChannelDirectoryModal';
 import { Footer } from './components/Footer';
 import { LegalModal, type LegalPageId } from './components/LegalModal';
 import { AdBanner } from './components/ads/AdBanner';
 import { ConsentBanner } from './components/ads/ConsentBanner';
 
+const PAGE_SIZE = 24;
+
 export default function App() {
-  const { articles, activeCategory, activeSourceGroup, setActiveSourceGroup } = useNews();
+  const {
+    articles,
+    activeCategory,
+    activeSourceGroup,
+    setActiveSourceGroup,
+    activeSourceName,
+    setActiveSourceName,
+    setActiveCategory,
+  } = useNews();
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [bookmarksOpen, setBookmarksOpen] = useState(false);
+  const [directoryOpen, setDirectoryOpen] = useState(false);
   const [legalPage, setLegalPage] = useState<LegalPageId>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterDone, setNewsletterDone] = useState(false);
+
+  // Reset pagination whenever filters change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeCategory, activeSourceGroup, activeSourceName]);
 
   // Global keyboard shortcuts (Ctrl+K or '/' to open search)
   useEffect(() => {
@@ -56,19 +74,24 @@ export default function App() {
 
   const filteredArticles = useMemo(() => {
     let list = articles;
+    if (activeSourceName) {
+      return list.filter((a) => a.sourceName === activeSourceName);
+    }
     if (activeCategory !== 'all') {
       list = list.filter((a) => a.category === activeCategory);
     }
-    if (activeSourceGroup !== 'All Sources') {
+    if (activeSourceGroup !== 'All Channels') {
       list = list.filter((a) => a.sourceGroup === activeSourceGroup);
     }
     return list;
-  }, [articles, activeCategory, activeSourceGroup]);
+  }, [articles, activeCategory, activeSourceGroup, activeSourceName]);
 
-  const showHero = activeCategory === 'all' && activeSourceGroup === 'All Sources';
+  const showHero = activeCategory === 'all' && activeSourceGroup === 'All Channels' && !activeSourceName;
   const leadArticle = filteredArticles[0] || articles[0];
   const secondaryHero = filteredArticles.slice(1, 3);
-  const gridArticles = showHero ? filteredArticles.slice(3) : filteredArticles;
+  const allGridArticles = showHero ? filteredArticles.slice(3) : filteredArticles;
+  const visibleGridArticles = allGridArticles.slice(0, visibleCount);
+  const remainingCount = Math.max(0, allGridArticles.length - visibleGridArticles.length);
 
   const trendingArticles = useMemo(
     () => [...articles].sort((a, b) => b.views - a.views).slice(0, 6),
@@ -90,6 +113,12 @@ export default function App() {
     showToast('Subscribed to The Meridian Daily Briefing!');
   };
 
+  const resetAllFilters = () => {
+    setActiveCategory('all');
+    setActiveSourceGroup('All Channels');
+    setActiveSourceName(null);
+  };
+
   return (
     <div className="min-h-screen editorial-mesh grid-backdrop relative">
       {/* Accessibility Skip Link */}
@@ -103,10 +132,11 @@ export default function App() {
       {/* Live Breaking Wire & Global / South Asia Markets Sparklines */}
       <BreakingTicker articles={articles} onSelectArticle={setSelectedArticle} />
 
-      {/* Editorial Masthead, Category Navigation & Channel Filters */}
+      {/* Editorial Masthead, Desks & 60+ Channel Controls */}
       <Header
         onOpenSearch={() => setSearchOpen(true)}
         onOpenBookmarks={() => setBookmarksOpen(true)}
+        onOpenDirectory={() => setDirectoryOpen(true)}
       />
 
       {/* Main Content */}
@@ -128,20 +158,27 @@ export default function App() {
           />
         ) : (
           <motion.section
-            key={`${activeCategory}-${activeSourceGroup}`}
+            key={`${activeCategory}-${activeSourceGroup}-${activeSourceName || 'none'}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             className="rounded-3xl border border-slate-500/20 dark:border-white/10 bg-white/80 dark:bg-[#0d1322]/90 p-6 sm:p-8 flex flex-wrap items-center justify-between gap-4"
           >
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase border ${activeCategoryMeta.badgeClass}`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {activeCategoryMeta.label} Desk
-                </span>
-                {activeSourceGroup !== 'All Sources' && (
+                {activeSourceName ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                    <Newspaper className="w-3.5 h-3.5" />
+                    Channel Spotlight
+                  </span>
+                ) : (
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase border ${activeCategoryMeta.badgeClass}`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {activeCategoryMeta.label} Desk
+                  </span>
+                )}
+                {activeSourceGroup !== 'All Channels' && !activeSourceName && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
                     <Newspaper className="w-3.5 h-3.5" />
                     {activeSourceGroup}
@@ -149,27 +186,29 @@ export default function App() {
                 )}
               </div>
               <h2 className="mt-3 font-display text-3xl sm:text-5xl text-slate-900 dark:text-white">
-                {activeSourceGroup !== 'All Sources'
-                  ? `${activeSourceGroup} — Live Coverage`
-                  : `${activeCategoryMeta.label} Coverage`}
+                {activeSourceName
+                  ? `${activeSourceName} — Live Feed`
+                  : activeSourceGroup !== 'All Channels'
+                    ? `${activeSourceGroup} — Live Coverage`
+                    : `${activeCategoryMeta.label} Coverage`}
               </h2>
               <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300">
-                {activeCategoryMeta.description}
+                {activeSourceName
+                  ? `Showing the newest live headlines syndicated from ${activeSourceName}.`
+                  : activeCategoryMeta.description}
               </p>
             </div>
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs text-slate-500">
                 {filteredArticles.length} live stories
               </span>
-              {activeSourceGroup !== 'All Sources' && (
-                <button
-                  type="button"
-                  onClick={() => setActiveSourceGroup('All Sources')}
-                  className="px-3 py-1.5 rounded-xl border border-slate-500/25 text-xs font-semibold hover:bg-slate-500/10 cursor-pointer"
-                >
-                  Show All Channels
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={resetAllFilters}
+                className="px-3.5 py-2 rounded-xl border border-slate-500/25 text-xs font-bold hover:bg-slate-500/10 cursor-pointer"
+              >
+                Back to Front Page
+              </button>
             </div>
           </motion.section>
         )}
@@ -182,7 +221,7 @@ export default function App() {
               <div className="flex items-center gap-2.5">
                 <span className="w-2 h-6 rounded-full bg-rose-600" />
                 <h2 className="font-display text-2xl sm:text-3xl tracking-tight text-slate-900 dark:text-white">
-                  {showHero ? "Today's Live Dispatches" : `Latest Headlines`}
+                  {showHero ? "Today's Live Global Dispatches" : 'Latest Headlines'}
                 </h2>
               </div>
               <span className="text-xs font-mono text-slate-500 hidden sm:inline">
@@ -190,44 +229,67 @@ export default function App() {
               </span>
             </div>
 
-            {gridArticles.length === 0 ? (
+            {visibleGridArticles.length === 0 ? (
               <div className="p-10 rounded-2xl border border-slate-500/20 bg-white dark:bg-[#0e1422] text-center space-y-3">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                  No articles matched this combination of desk and channel right now.
+                  No live items currently returned for this channel filter. Try refreshing or switching outlets.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setActiveSourceGroup('All Sources')}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold cursor-pointer"
-                >
-                  Reset Channel Filter
-                </button>
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={resetAllFilters}
+                    className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold cursor-pointer"
+                  >
+                    Show All Live Stories
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDirectoryOpen(true)}
+                    className="px-4 py-2 rounded-xl border border-slate-500/25 text-xs font-bold cursor-pointer"
+                  >
+                    Browse 60+ Channels
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 gap-6">
-                {gridArticles.map((article, idx) => (
-                  <React.Fragment key={article.id}>
-                    <ArticleCard article={article} index={idx} onSelect={setSelectedArticle} />
-                    {/* Optional Manual In-Feed Google AdSense Slot */}
-                    {idx === 3 && (
-                      <div className="sm:col-span-2">
-                        <AdBanner
-                          adSlot={import.meta.env.VITE_ADSENSE_SLOT_INFEED}
-                          format="fluid"
-                          minHeightClass="min-h-[120px]"
-                          label="In-feed advertisement"
-                        />
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
+              <>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {visibleGridArticles.map((article, idx) => (
+                    <React.Fragment key={article.id}>
+                      <ArticleCard article={article} index={idx} onSelect={setSelectedArticle} />
+                      {idx === 3 && (
+                        <div className="sm:col-span-2">
+                          <AdBanner
+                            adSlot={import.meta.env.VITE_ADSENSE_SLOT_INFEED}
+                            format="fluid"
+                            minHeightClass="min-h-[120px]"
+                            label="In-feed advertisement"
+                          />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+
+                {/* Load More Pagination Button */}
+                {remainingCount > 0 && (
+                  <div className="pt-4 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-slate-500/25 bg-white dark:bg-[#0e1422] hover:border-rose-500 hover:text-rose-500 text-xs font-extrabold shadow-sm transition-all cursor-pointer"
+                    >
+                      Load More Stories ({remainingCount} remaining)
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
 
           {/* Right 4 Columns: Trending, Newsletter & Optional Manual AdSense Display Units */}
           <aside aria-label="Trending and Briefing Sidebar" className="lg:col-span-4 space-y-6 lg:sticky lg:top-44">
-            {/* Optional Manual Google AdSense Sidebar Rectangle (300x250) */}
             <AdBanner
               adSlot={import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR_MPU}
               format="rectangle"
@@ -276,10 +338,10 @@ export default function App() {
                 Free Daily Briefing
               </div>
               <h3 className="mt-2 font-display text-2xl text-slate-900 dark:text-white leading-tight">
-                Nepal, India &amp; Global headlines in one morning email.
+                US, UK, Europe, Nepal &amp; India headlines in one briefing.
               </h3>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Essential daily English stories from Kathmandu, New Delhi, Wall Street, and Washington — always free.
+                Essential daily coverage from 60+ global newspapers and broadcast channels — always free.
               </p>
               {newsletterDone ? (
                 <div className="mt-4 p-3 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-2">
@@ -308,7 +370,6 @@ export default function App() {
               )}
             </div>
 
-            {/* Optional Manual Google AdSense Vertical Display Slot */}
             <AdBanner
               adSlot={import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR_TALL}
               format="vertical"
@@ -319,7 +380,10 @@ export default function App() {
         </div>
       </main>
 
-      <Footer onOpenLegal={setLegalPage} />
+      <Footer
+        onOpenLegal={setLegalPage}
+        onOpenDirectory={() => setDirectoryOpen(true)}
+      />
 
       {/* Google AdSense Cookie Consent Banner */}
       <ConsentBanner />
@@ -332,7 +396,10 @@ export default function App() {
         onSelectArticle={setSelectedArticle}
       />
 
-      {/* About / Privacy Policy / Terms / Contact Modal (for Google AdSense compliance) */}
+      {/* All 60+ Channels Directory Modal */}
+      <ChannelDirectoryModal open={directoryOpen} onClose={() => setDirectoryOpen(false)} />
+
+      {/* About / Privacy Policy / Terms / Contact Modal */}
       <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />
 
       {/* Instant Command Search Modal */}

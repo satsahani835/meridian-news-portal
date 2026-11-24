@@ -3,7 +3,11 @@ export type CategoryId =
   | 'nepal'
   | 'india'
   | 'business'
-  | 'politics'
+  | 'us-tv'
+  | 'us-print'
+  | 'us-digital'
+  | 'uk'
+  | 'intl'
   | 'world'
   | 'technology'
   | 'sports';
@@ -14,6 +18,12 @@ export interface CategoryMeta {
   accent: string;
   badgeClass: string;
   description: string;
+}
+
+export interface ChannelDirectorySection {
+  title: string;
+  group: string;
+  channels: Array<{ name: string; region: string; note: string }>;
 }
 
 export interface Author {
@@ -48,14 +58,6 @@ export interface Article {
   keyTakeaways?: string[];
   views: number;
 }
-
-export type GoogleAdPlacement =
-  | 'top-leaderboard'
-  | 'sidebar-rectangle'
-  | 'sidebar-skyscraper'
-  | 'in-feed'
-  | 'in-article'
-  | 'sticky-anchor';
 
 export interface MarketTickerItem {
   symbol: string;

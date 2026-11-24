@@ -10,6 +10,7 @@ interface NewsContextValue {
   articles: Article[];
   liveWireCount: number;
   sourcesCount: number;
+  sourceCounts: Record<string, number>;
   liveWireLoading: boolean;
   lastSyncedAt: string | null;
   refreshLiveWire: () => Promise<void>;
@@ -17,6 +18,8 @@ interface NewsContextValue {
   setActiveCategory: (cat: CategoryId) => void;
   activeSourceGroup: string;
   setActiveSourceGroup: (group: string) => void;
+  activeSourceName: string | null;
+  setActiveSourceName: (name: string | null) => void;
   bookmarks: string[];
   toggleBookmark: (id: string) => void;
   isBookmarked: (id: string) => boolean;
@@ -32,7 +35,8 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
   const [liveWireLoading, setLiveWireLoading] = useState(true);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<CategoryId>('all');
-  const [activeSourceGroup, setActiveSourceGroup] = useState<string>('All Sources');
+  const [activeSourceGroup, setActiveSourceGroup] = useState<string>('All Channels');
+  const [activeSourceName, setActiveSourceName] = useState<string | null>(null);
 
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
     try {
@@ -100,11 +104,20 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, [fetchLiveWire]);
 
-  // Live daily news leads the entire portal automatically; curated fallback shows only if live feeds haven't loaded yet
   const articles = useMemo(() => {
     if (liveArticles.length > 0) return liveArticles;
     return EDITORIAL_ARTICLES;
   }, [liveArticles]);
+
+  const sourceCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const a of articles) {
+      if (a.sourceName) {
+        counts[a.sourceName] = (counts[a.sourceName] || 0) + 1;
+      }
+    }
+    return counts;
+  }, [articles]);
 
   const toggleBookmark = useCallback((id: string) => {
     setBookmarks((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [id, ...prev]));
@@ -122,6 +135,7 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
         articles,
         liveWireCount: liveArticles.length,
         sourcesCount,
+        sourceCounts,
         liveWireLoading,
         lastSyncedAt,
         refreshLiveWire: () => fetchLiveWire(true),
@@ -129,6 +143,8 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
         setActiveCategory,
         activeSourceGroup,
         setActiveSourceGroup,
+        activeSourceName,
+        setActiveSourceName,
         bookmarks,
         toggleBookmark,
         isBookmarked,

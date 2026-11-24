@@ -56,7 +56,7 @@ export const EDITORIAL_ARTICLES: Article[] = [
     imageCaption: 'Global financial district skyline at market open.',
     isBreaking: true,
     sourceName: 'NDTV Profit',
-    sourceGroup: 'NDTV Profit',
+    sourceGroup: 'India & Profit',
     tags: ['Markets', 'NEPSE', 'Nifty 50', 'Wall Street'],
     content: [
       'Financial desks across South Asia and North America are tracking corporate margin resilience alongside stabilizing sovereign yields.',
@@ -112,7 +112,7 @@ export const EDITORIAL_ARTICLES: Article[] = [
     image: '/images/sports-stadium.jpg',
     imageCaption: 'Championship stadium illuminated for evening fixtures.',
     sourceName: 'Times of India',
-    sourceGroup: 'Times of India',
+    sourceGroup: 'India & Profit',
     tags: ['Sports', 'Cricket', 'Athletics'],
     content: [
       'Real-time sports coverage updates automatically from Times of India Sports and international wire desks.',
