@@ -4,17 +4,19 @@ import { EDITORIAL_ARTICLES } from '../data/articles';
 
 const BOOKMARKS_KEY = 'meridian_bookmarks_v1';
 const THEME_KEY = 'meridian_theme_v1';
+const AUTO_REFRESH_MS = 5 * 60 * 1000; // Auto-refresh live news every 5 minutes
 
 interface NewsContextValue {
   articles: Article[];
   liveWireCount: number;
+  sourcesCount: number;
   liveWireLoading: boolean;
   lastSyncedAt: string | null;
-  includeLiveWire: boolean;
-  setIncludeLiveWire: (val: boolean) => void;
   refreshLiveWire: () => Promise<void>;
   activeCategory: CategoryId;
   setActiveCategory: (cat: CategoryId) => void;
+  activeSourceGroup: string;
+  setActiveSourceGroup: (group: string) => void;
   bookmarks: string[];
   toggleBookmark: (id: string) => void;
   isBookmarked: (id: string) => boolean;
@@ -26,10 +28,11 @@ const NewsContext = createContext<NewsContextValue | null>(null);
 
 export function NewsProvider({ children }: { children: React.ReactNode }) {
   const [liveArticles, setLiveArticles] = useState<Article[]>([]);
-  const [liveWireLoading, setLiveWireLoading] = useState(false);
+  const [sourcesCount, setSourcesCount] = useState(0);
+  const [liveWireLoading, setLiveWireLoading] = useState(true);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
-  const [includeLiveWire, setIncludeLiveWire] = useState(true);
   const [activeCategory, setActiveCategory] = useState<CategoryId>('all');
+  const [activeSourceGroup, setActiveSourceGroup] = useState<string>('All Sources');
 
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
     try {
@@ -77,12 +80,13 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch(`/api/live-news${force ? '?refresh=1' : ''}`);
       if (!res.ok) throw new Error('Live wire fetch failed');
       const data = await res.json();
-      if (Array.isArray(data.articles)) {
+      if (Array.isArray(data.articles) && data.articles.length > 0) {
         setLiveArticles(data.articles);
+        setSourcesCount(Number(data.sourcesCount) || 0);
         setLastSyncedAt(data.fetchedAt || new Date().toISOString());
       }
     } catch {
-      // Gracefully keep editorial edition if offline
+      // Fall back smoothly to curated offline articles
     } finally {
       setLiveWireLoading(false);
     }
@@ -90,12 +94,17 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchLiveWire(false);
+    const interval = setInterval(() => {
+      fetchLiveWire(false);
+    }, AUTO_REFRESH_MS);
+    return () => clearInterval(interval);
   }, [fetchLiveWire]);
 
+  // Live daily news leads the entire portal automatically; curated fallback shows only if live feeds haven't loaded yet
   const articles = useMemo(() => {
-    if (!includeLiveWire || liveArticles.length === 0) return EDITORIAL_ARTICLES;
-    return [...EDITORIAL_ARTICLES, ...liveArticles];
-  }, [includeLiveWire, liveArticles]);
+    if (liveArticles.length > 0) return liveArticles;
+    return EDITORIAL_ARTICLES;
+  }, [liveArticles]);
 
   const toggleBookmark = useCallback((id: string) => {
     setBookmarks((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [id, ...prev]));
@@ -112,13 +121,14 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
       value={{
         articles,
         liveWireCount: liveArticles.length,
+        sourcesCount,
         liveWireLoading,
         lastSyncedAt,
-        includeLiveWire,
-        setIncludeLiveWire,
         refreshLiveWire: () => fetchLiveWire(true),
         activeCategory,
         setActiveCategory,
+        activeSourceGroup,
+        setActiveSourceGroup,
         bookmarks,
         toggleBookmark,
         isBookmarked,

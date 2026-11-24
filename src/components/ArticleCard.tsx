@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bookmark, Clock, Radio, ArrowUpRight } from 'lucide-react';
+import { Bookmark, Clock, ArrowUpRight, Newspaper } from 'lucide-react';
 import type { Article } from '../types/news';
 import { CATEGORY_MAP } from '../data/categories';
 import { useNews } from '../context/NewsContext';
@@ -29,7 +29,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index, onSele
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.42, delay: Math.min(index * 0.05, 0.25) }}
+      transition={{ duration: 0.42, delay: Math.min(index * 0.04, 0.22) }}
       className="group rounded-2xl border border-slate-500/20 dark:border-white/10 bg-white dark:bg-[#0e1422] overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-black/15 hover:border-rose-500/45 transition-all duration-300"
     >
       {/* Image Container */}
@@ -47,22 +47,20 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, index, onSele
           }}
           className="w-full h-full object-cover transition-transform duration-600 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15 opacity-75 group-hover:opacity-60 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/15 opacity-80 group-hover:opacity-60 transition-opacity" />
 
-        {/* Category + Live Wire Badge */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md bg-slate-950/75 text-white border border-white/15`}
-          >
+        {/* Source & Category Badges */}
+        <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 pr-11">
+          {article.sourceName && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wide backdrop-blur-md bg-slate-950/85 text-amber-300 border border-white/15">
+              <Newspaper className="w-2.5 h-2.5" />
+              {article.sourceName}
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-md bg-slate-950/75 text-white border border-white/15">
             <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: catMeta.accent }} />
             {catMeta.label}
           </span>
-          {article.isLiveWire && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-600/90 text-white">
-              <Radio className="w-2.5 h-2.5" />
-              Wire
-            </span>
-          )}
         </div>
 
         {/* Save Button */}

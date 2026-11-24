@@ -9,23 +9,20 @@ import {
   Square,
   Clock,
   ExternalLink,
-  Sparkles,
+  Newspaper,
   MessageSquare,
   Send,
 } from 'lucide-react';
 import type { Article } from '../types/news';
 import { CATEGORY_MAP } from '../data/categories';
 import { useNews } from '../context/NewsContext';
-import { useAdMonetization } from '../context/AdMonetizationContext';
-import { AdSlot } from './ads/AdSlot';
+import { AdBanner } from './ads/AdBanner';
 
 interface ArticleReaderModalProps {
   article: Article | null;
   relatedArticles: Article[];
   onClose: () => void;
   onSelectArticle: (article: Article) => void;
-  onOpenPublisherStudio: () => void;
-  onAdClickToast: (msg: string) => void;
 }
 
 interface ReaderComment {
@@ -40,28 +37,17 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
   relatedArticles,
   onClose,
   onSelectArticle,
-  onOpenPublisherStudio,
-  onAdClickToast,
 }) => {
   const { isBookmarked, toggleBookmark } = useNews();
-  const { config } = useAdMonetization();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [readProgress, setReadProgress] = useState(0);
   const [fontScale, setFontScale] = useState<'sm' | 'md' | 'lg'>('md');
   const [copied, setCopied] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [comments, setComments] = useState<ReaderComment[]>([
-    {
-      id: 'c-1',
-      author: 'Dr. Claire Henderson',
-      text: 'Superb reporting — especially refreshing to read long-form English analysis without hitting a paywall.',
-      time: '42m ago',
-    },
-  ]);
+  const [comments, setComments] = useState<ReaderComment[]>([]);
   const [commentAuthor, setCommentAuthor] = useState('');
   const [commentText, setCommentText] = useState('');
 
-  // Reset scroll & speech when article changes
   useEffect(() => {
     setReadProgress(0);
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
@@ -72,7 +58,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
     };
   }, [article?.id]);
 
-  // Escape key closes modal
   useEffect(() => {
     if (!article) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -114,7 +99,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
 
   const handleShare = () => {
     if (!article) return;
-    const shareUrl = `${window.location.origin}/#article-${article.slug}`;
+    const shareUrl = article.externalUrl || `${window.location.origin}/#article-${article.slug}`;
     navigator.clipboard?.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -126,7 +111,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
     setComments((prev) => [
       {
         id: `c-${Date.now()}`,
-        author: commentAuthor.trim() || 'Meridian Reader',
+        author: commentAuthor.trim() || 'Reader',
         text: commentText.trim(),
         time: 'Just now',
       },
@@ -170,16 +155,18 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
             {/* Sticky Top Reader Toolbar */}
             <div className="shrink-0 px-4 sm:px-6 py-3 border-b border-slate-500/15 flex items-center justify-between gap-2 bg-white/80 dark:bg-[#0c1222]/90 backdrop-blur-md">
               <div className="flex items-center gap-2 min-w-0">
+                {article.sourceName && (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                    <Newspaper className="w-3 h-3" />
+                    {article.sourceName}
+                  </span>
+                )}
                 <span className="text-[11px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-full bg-rose-500/15 text-rose-500 font-bold shrink-0">
                   {(CATEGORY_MAP[article.category] || CATEGORY_MAP.world).label}
-                </span>
-                <span className="hidden sm:inline text-xs font-mono text-slate-500">
-                  {readProgress}% read
                 </span>
               </div>
 
               <div className="flex items-center gap-1.5">
-                {/* Text-to-Speech Listen Button */}
                 <button
                   type="button"
                   onClick={toggleListen}
@@ -207,7 +194,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   )}
                 </button>
 
-                {/* Font Size Toggle */}
                 <button
                   type="button"
                   onClick={() => setFontScale((prev) => (prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'))}
@@ -217,7 +203,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   A{fontScale === 'sm' ? '-' : fontScale === 'lg' ? '+' : ''}
                 </button>
 
-                {/* Share */}
                 <button
                   type="button"
                   onClick={handleShare}
@@ -227,7 +212,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
                 </button>
 
-                {/* Bookmark */}
                 <button
                   type="button"
                   onClick={() => toggleBookmark(article.id)}
@@ -241,7 +225,6 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   <Bookmark className="w-4 h-4" fill={isBookmarked(article.id) ? 'currentColor' : 'none'} />
                 </button>
 
-                {/* Close */}
                 <button
                   type="button"
                   onClick={onClose}
@@ -272,8 +255,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                     <div>
                       <div className="text-sm font-bold">{article.author.name}</div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">
-                        {article.author.role}
-                        {article.author.location ? ` · ${article.author.location}` : ''}
+                        {article.sourceName || article.author.role}
                       </div>
                     </div>
                   </div>
@@ -294,7 +276,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   </div>
                 </div>
 
-                {/* Editorial Hero Image */}
+                {/* Hero Image */}
                 <figure className="my-7">
                   <div className="rounded-2xl overflow-hidden border border-slate-500/20 shadow-xl bg-slate-900">
                     <img
@@ -311,36 +293,18 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   </figcaption>
                 </figure>
 
-                {/* Key Takeaways Executive Brief Box */}
-                {article.keyTakeaways && article.keyTakeaways.length > 0 && (
-                  <div className="my-7 p-5 rounded-2xl border border-amber-500/25 bg-amber-500/8 dark:bg-amber-500/10">
-                    <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-3">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Key Takeaways
-                    </div>
-                    <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
-                      {article.keyTakeaways.map((point, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
-                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Paragraphs + High-Yield In-Article Revenue Ad Unit after paragraph 2 */}
+                {/* Article Text + Optional Manual In-Article Google AdSense Banner */}
                 <div className={`font-serif space-y-6 text-slate-800 dark:text-slate-200 ${fontSizeClass}`}>
                   {article.content.map((para, idx) => (
                     <React.Fragment key={idx}>
                       <p className={idx === 0 ? 'article-dropcap' : ''}>{para}</p>
-                      {idx === 1 && config.enableInArticleAds && (
-                        <div className="my-8 font-sans">
-                          <AdSlot
-                            placement="in-article-mid"
-                            seed={idx + 1}
-                            onOpenPublisherStudio={onOpenPublisherStudio}
-                            onAdClickToast={onAdClickToast}
+                      {idx === 0 && (
+                        <div className="my-6 font-sans">
+                          <AdBanner
+                            adSlot={import.meta.env.VITE_ADSENSE_SLOT_INARTICLE}
+                            format="fluid"
+                            layout="in-article"
+                            minHeightClass="min-h-[120px]"
                           />
                         </div>
                       )}
@@ -348,41 +312,30 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                   ))}
                 </div>
 
-                {/* Live Wire External Link if RSS Story */}
+                {/* Direct Publisher Read Full Article CTA */}
                 {article.externalUrl && (
-                  <div className="mt-8 p-4 rounded-2xl border border-sky-500/25 bg-sky-500/10 flex flex-wrap items-center justify-between gap-3">
-                    <div className="text-xs text-slate-700 dark:text-slate-200">
-                      Original syndicated wire dispatch from <strong>{article.sourceName}</strong>.
+                  <div className="mt-8 p-5 rounded-2xl border border-rose-500/25 bg-rose-500/8 flex flex-wrap items-center justify-between gap-4">
+                    <div className="text-sm text-slate-700 dark:text-slate-200">
+                      Continue reading the complete original report on{' '}
+                      <strong className="text-slate-900 dark:text-white">{article.sourceName}</strong>.
                     </div>
                     <a
                       href={article.externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-colors"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold shadow-md transition-colors"
                     >
-                      Read Full Source Dispatch
+                      Read Full Article on {article.sourceName}
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 )}
 
-                {/* Tags */}
-                <div className="mt-8 pt-6 border-t border-slate-500/15 flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 rounded-full text-xs font-mono bg-slate-500/10 text-slate-600 dark:text-slate-300"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
                 {/* Reader Discussion */}
                 <section className="mt-10 pt-8 border-t border-slate-500/15">
                   <h2 className="text-base font-extrabold flex items-center gap-2 mb-4">
                     <MessageSquare className="w-4 h-4 text-rose-500" />
-                    Reader Perspectives ({comments.length})
+                    Reader Comments ({comments.length})
                   </h2>
                   <form onSubmit={handlePostComment} className="space-y-3 mb-6">
                     <div className="grid sm:grid-cols-3 gap-3">
@@ -399,7 +352,7 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                           type="text"
                           value={commentText}
                           onChange={(e) => setCommentText(e.target.value)}
-                          placeholder="Share a thoughtful perspective on this report..."
+                          placeholder="Add your comment on this story..."
                           aria-label="Write a comment"
                           className="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-500/20 bg-white dark:bg-[#0f1626] text-xs"
                         />
@@ -414,26 +367,28 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                     </div>
                   </form>
 
-                  <div className="space-y-3">
-                    {comments.map((c) => (
-                      <div
-                        key={c.id}
-                        className="p-4 rounded-2xl border border-slate-500/15 bg-white dark:bg-[#0f1626]"
-                      >
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span className="font-bold">{c.author}</span>
-                          <span className="text-slate-500 font-mono text-[11px]">{c.time}</span>
+                  {comments.length > 0 && (
+                    <div className="space-y-3">
+                      {comments.map((c) => (
+                        <div
+                          key={c.id}
+                          className="p-4 rounded-2xl border border-slate-500/15 bg-white dark:bg-[#0f1626]"
+                        >
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="font-bold">{c.author}</span>
+                            <span className="text-slate-500 font-mono text-[11px]">{c.time}</span>
+                          </div>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">{c.text}</p>
                         </div>
-                        <p className="text-sm text-slate-700 dark:text-slate-300">{c.text}</p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
 
-                {/* Related Coverage */}
+                {/* Related Stories */}
                 {relatedArticles.length > 0 && (
                   <section className="mt-10 pt-8 border-t border-slate-500/15">
-                    <h2 className="text-base font-extrabold mb-4">Continue Reading</h2>
+                    <h2 className="text-base font-extrabold mb-4">More Stories in This Desk</h2>
                     <div className="grid sm:grid-cols-2 gap-4">
                       {relatedArticles.slice(0, 2).map((rel) => (
                         <button
@@ -442,8 +397,8 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                           onClick={() => onSelectArticle(rel)}
                           className="text-left p-4 rounded-2xl border border-slate-500/20 hover:border-rose-500/50 bg-white dark:bg-[#0f1626] transition-all cursor-pointer group"
                         >
-                          <span className="text-[10px] font-mono uppercase text-rose-500 font-bold">
-                            {rel.category}
+                          <span className="text-[10px] font-mono uppercase text-amber-500 font-bold">
+                            {rel.sourceName || rel.category}
                           </span>
                           <div className="mt-1 font-serif text-base font-bold group-hover:text-rose-500 transition-colors line-clamp-2">
                             {rel.title}

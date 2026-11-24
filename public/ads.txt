@@ -1,4 +1,1 @@
-# THE MERIDIAN — Authorized Digital Sellers (ads.txt)
-# Replace pub-0000000000000000 with your real Google AdSense Publisher ID
-# Format: <ad-network-domain>, <publisher-account-id>, <relationship>, <certification-authority-id>
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-7994439676148929, DIRECT, f08c47fec0942fa0

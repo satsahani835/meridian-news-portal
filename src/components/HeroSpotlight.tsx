@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock, Bookmark, ArrowRight, Radio, Eye, Sparkles } from 'lucide-react';
+import { Clock, Bookmark, ArrowRight, Radio, Eye, Newspaper } from 'lucide-react';
 import type { Article } from '../types/news';
 import { CATEGORY_MAP } from '../data/categories';
 import { useNews } from '../context/NewsContext';
@@ -13,12 +13,12 @@ interface HeroSpotlightProps {
 
 const GlobalPulseVisual: React.FC = () => {
   const hubs = [
-    { name: 'NYC', x: 78, y: 54, delay: 0 },
-    { name: 'LDN', x: 146, y: 42, delay: 0.4 },
-    { name: 'GVA', x: 158, y: 52, delay: 0.8 },
-    { name: 'DXB', x: 196, y: 68, delay: 1.2 },
-    { name: 'TYO', x: 268, y: 56, delay: 1.6 },
-    { name: 'SYD', x: 274, y: 108, delay: 2.0 },
+    { name: 'NYC', x: 78, y: 52, delay: 0 },
+    { name: 'WDC', x: 68, y: 64, delay: 0.35 },
+    { name: 'LDN', x: 146, y: 40, delay: 0.7 },
+    { name: 'DEL', x: 214, y: 62, delay: 1.05 },
+    { name: 'KTM', x: 229, y: 58, delay: 1.4 },
+    { name: 'TYO', x: 274, y: 54, delay: 1.75 },
   ];
 
   return (
@@ -27,21 +27,20 @@ const GlobalPulseVisual: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-400 font-bold">
-            Global Newsroom Telemetry
+            Live Global Wire Network
           </span>
         </div>
-        <span className="text-[10px] font-mono text-slate-400">6 Bureaus Active</span>
+        <span className="text-[10px] font-mono text-slate-400">KTM · DEL · NYC · WDC</span>
       </div>
 
       <svg viewBox="0 0 320 132" className="w-full h-28" role="img" aria-label="Live global newsroom network visualization">
         <defs>
           <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.2" />
-            <stop offset="50%" stopColor="#f43f5e" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.25" />
+            <stop offset="50%" stopColor="#f43f5e" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.4" />
           </linearGradient>
         </defs>
-        {/* Subtle latitude / longitude radar grid */}
         <g stroke="#334155" strokeWidth="0.6" strokeOpacity="0.45">
           <line x1="0" y1="33" x2="320" y2="33" />
           <line x1="0" y1="66" x2="320" y2="66" />
@@ -52,7 +51,6 @@ const GlobalPulseVisual: React.FC = () => {
           <line x1="256" y1="0" x2="256" y2="132" />
         </g>
 
-        {/* Stylized Continents Silhouette */}
         <g fill="#1e293b" opacity="0.85">
           <path d="M36 32 L94 26 L106 58 L78 72 L58 62 Z" />
           <path d="M78 76 L102 82 L94 118 L76 112 Z" />
@@ -62,9 +60,8 @@ const GlobalPulseVisual: React.FC = () => {
           <path d="M248 92 L288 94 L284 118 L252 116 Z" />
         </g>
 
-        {/* Animated Data Corridors */}
         <motion.path
-          d="M78 54 Q112 18 146 42 T268 56"
+          d="M78 52 Q146 14 229 58 T274 54"
           fill="none"
           stroke="url(#arcGrad)"
           strokeWidth="1.6"
@@ -74,18 +71,17 @@ const GlobalPulseVisual: React.FC = () => {
           transition={{ duration: 2.4, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
         />
         <motion.path
-          d="M158 52 Q216 26 274 108"
+          d="M68 64 Q142 22 214 62"
           fill="none"
           stroke="#38bdf8"
           strokeWidth="1.2"
-          strokeOpacity="0.55"
+          strokeOpacity="0.6"
           strokeDasharray="3 5"
           initial={{ pathLength: 0.1 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: 3.1, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
         />
 
-        {/* Pulsing Newsroom Hubs */}
         {hubs.map((hub) => (
           <g key={hub.name} transform={`translate(${hub.x}, ${hub.y})`}>
             <motion.circle
@@ -124,28 +120,32 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="lg:col-span-8 group relative rounded-3xl overflow-hidden border border-slate-500/20 dark:border-white/10 bg-slate-950 text-white shadow-2xl shadow-black/20 flex flex-col justify-end min-h-[470px] sm:min-h-[540px]"
       >
-        {/* High-Priority Hero LCP Image */}
         <img
           src={leadArticle.image}
           alt={leadArticle.title}
           fetchPriority="high"
           decoding="async"
+          onError={(e) => {
+            if (leadArticle.fallbackImage) (e.currentTarget as HTMLImageElement).src = leadArticle.fallbackImage;
+          }}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
         />
-        {/* Multi-stop editorial readability vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050811] via-[#050811]/72 to-[#050811]/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050811] via-[#050811]/75 to-[#050811]/20" />
 
         {/* Top Floating Badges */}
         <div className="relative z-10 flex items-center justify-between p-6 sm:p-8 mb-auto">
           <div className="flex flex-wrap items-center gap-2">
-            {leadArticle.isBreaking && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-600 text-white text-[11px] font-mono font-bold uppercase tracking-wider shadow-lg shadow-rose-600/40">
-                <Radio className="w-3 h-3 animate-pulse" />
-                Lead Dispatch
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-600 text-white text-[11px] font-mono font-bold uppercase tracking-wider shadow-lg shadow-rose-600/40">
+              <Radio className="w-3 h-3 animate-pulse" />
+              Top Story
+            </span>
+            {leadArticle.sourceName && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-bold text-amber-300">
+                <Newspaper className="w-3 h-3" />
+                {leadArticle.sourceName}
               </span>
             )}
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-xs font-semibold text-white">
-              <Sparkles className="w-3 h-3 text-amber-400" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-xs font-semibold text-white">
               {catMeta.label}
             </span>
           </div>
@@ -187,7 +187,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               <div>
                 <div className="text-xs font-bold text-white">{leadArticle.author.name}</div>
                 <div className="text-[11px] text-slate-300 flex items-center gap-2">
-                  <span>{leadArticle.author.location || leadArticle.author.role}</span>
+                  <span>{leadArticle.sourceName || leadArticle.author.role}</span>
                   <span>·</span>
                   <span className="inline-flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -203,7 +203,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
             </div>
 
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-slate-950 font-bold text-xs group-hover:bg-rose-500 group-hover:text-white transition-colors">
-              Read Full Report
+              Read Full Story
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
             </span>
           </div>
@@ -237,11 +237,11 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-1.5">
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                     <span
                       className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border ${c.badgeClass}`}
                     >
-                      {c.label}
+                      {item.sourceName || c.label}
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       {item.readTimeMinutes}m

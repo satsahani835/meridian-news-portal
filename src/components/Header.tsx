@@ -5,40 +5,36 @@ import {
   Sun,
   Moon,
   Bookmark,
-  DollarSign,
   RefreshCw,
   Globe2,
-  Sparkles,
+  Radio,
+  Newspaper,
 } from 'lucide-react';
-import { CATEGORIES } from '../data/categories';
+import { CATEGORIES, SOURCE_GROUPS } from '../data/categories';
 import { useNews } from '../context/NewsContext';
-import { useAdMonetization } from '../context/AdMonetizationContext';
 
 interface HeaderProps {
   onOpenSearch: () => void;
   onOpenBookmarks: () => void;
-  onOpenPublisherStudio: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenSearch,
   onOpenBookmarks,
-  onOpenPublisherStudio,
 }) => {
   const {
     activeCategory,
     setActiveCategory,
+    activeSourceGroup,
+    setActiveSourceGroup,
     bookmarks,
     theme,
     toggleTheme,
     liveWireCount,
+    sourcesCount,
     liveWireLoading,
-    includeLiveWire,
-    setIncludeLiveWire,
     refreshLiveWire,
   } = useNews();
-
-  const { analytics } = useAdMonetization();
 
   const todayFormatted = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
@@ -48,11 +44,11 @@ export const Header: React.FC<HeaderProps> = ({
   }).format(new Date());
 
   return (
-    <header className="sticky top-0 z-30 backdrop-blur-xl bg-[#f7f4ee]/88 dark:bg-[#07090f]/86 border-b border-slate-500/15">
-      {/* Top Masthead Bar */}
+    <header className="sticky top-0 z-30 backdrop-blur-xl bg-[#f7f4ee]/90 dark:bg-[#07090f]/88 border-b border-slate-500/15">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Masthead Bar */}
         <div className="h-18 sm:h-20 flex items-center justify-between gap-4">
-          {/* Left: Date & Free Edition Badge */}
+          {/* Left: Date & Live Daily Edition Info */}
           <div className="hidden lg:flex flex-col">
             <span className="text-[11px] font-mono uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
               {todayFormatted}
@@ -60,18 +56,19 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="mt-0.5 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
               <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                 <Globe2 className="w-3.5 h-3.5" />
-                Global English Edition
+                Nepal · India · US · Global
               </span>
               <span className="text-slate-400">·</span>
-              <span className="font-mono text-[11px] text-rose-500 font-semibold">100% Free Access</span>
+              <span className="font-mono text-[11px] text-rose-500 font-semibold">Free English Edition</span>
             </div>
           </div>
 
-          {/* Center: Iconic Newspaper Masthead */}
+          {/* Center: Newspaper Masthead */}
           <button
             type="button"
             onClick={() => {
               setActiveCategory('all');
+              setActiveSourceGroup('All Sources');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="flex flex-col items-start lg:items-center group cursor-pointer"
@@ -83,11 +80,11 @@ export const Header: React.FC<HeaderProps> = ({
               </h1>
             </div>
             <span className="hidden sm:block text-[9px] font-mono uppercase tracking-[0.34em] text-slate-500 dark:text-slate-400 mt-0.5">
-              Independent Global Journalism
+              Live Independent Global English News
             </span>
           </button>
 
-          {/* Right: Controls + Publisher Revenue Button */}
+          {/* Right: Clean Reader Controls */}
           <div className="flex items-center gap-2">
             {/* Search Button */}
             <button
@@ -122,31 +119,33 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Switch to Broadsheet Light Mode' : 'Switch to Midnight Dark Mode'}
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               className="w-10 h-10 rounded-xl border border-slate-500/20 bg-white/70 dark:bg-white/5 hover:border-rose-500/50 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
             </button>
 
-            {/* Publisher Ad Revenue Studio Trigger */}
+            {/* Refresh Live Feeds */}
             <button
               type="button"
-              onClick={onOpenPublisherStudio}
-              className="inline-flex items-center gap-2 h-10 px-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold shadow-lg shadow-emerald-600/25 transition-all cursor-pointer"
+              onClick={() => refreshLiveWire()}
+              disabled={liveWireLoading}
+              aria-label="Refresh today's live news feeds"
+              title="Auto-updates every 5 minutes — click to refresh now"
+              className="inline-flex items-center gap-1.5 h-10 px-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold transition-colors cursor-pointer disabled:opacity-60"
             >
-              <DollarSign className="w-4 h-4" />
-              <span className="hidden sm:inline">Ad Studio</span>
-              <span className="font-mono text-[11px] bg-black/25 px-1.5 py-0.5 rounded-md">
-                ${analytics.totalRevenue.toFixed(2)}
+              <RefreshCw className={`w-3.5 h-3.5 ${liveWireLoading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">
+                {liveWireCount > 0 ? `Live (${liveWireCount})` : 'Syncing…'}
               </span>
             </button>
           </div>
         </div>
 
-        {/* Category Navigation Strip + Live RSS Wire Controls */}
+        {/* Category Navigation Strip */}
         <nav
           aria-label="News Desks"
-          className="flex items-center justify-between gap-4 py-2.5 border-t border-slate-500/15 overflow-x-auto no-scrollbar"
+          className="flex items-center justify-between gap-4 py-2 border-t border-slate-500/15 overflow-x-auto no-scrollbar"
         >
           <div className="flex items-center gap-1">
             {CATEGORIES.map((cat) => {
@@ -155,7 +154,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={cat.id}
                   type="button"
-                  onClick={() => setActiveCategory(cat.id)}
+                  onClick={() => {
+                    setActiveCategory(cat.id);
+                    setActiveSourceGroup('All Sources');
+                  }}
                   className={`relative shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer ${
                     active
                       ? 'text-white'
@@ -175,31 +177,39 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </div>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => setIncludeLiveWire(!includeLiveWire)}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold border transition-colors cursor-pointer ${
-                includeLiveWire
-                  ? 'border-emerald-500/35 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                  : 'border-slate-500/20 text-slate-500'
-              }`}
-              title="Toggle live English RSS wire feeds alongside curated editorial features"
-            >
-              <Sparkles className="w-3 h-3" />
-              Live RSS ({liveWireCount})
-            </button>
-            <button
-              type="button"
-              onClick={() => refreshLiveWire()}
-              disabled={liveWireLoading}
-              aria-label="Refresh live RSS feeds"
-              className="p-1.5 rounded-full border border-slate-500/20 hover:bg-slate-500/10 text-slate-500 dark:text-slate-300 cursor-pointer disabled:opacity-50"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${liveWireLoading ? 'animate-spin' : ''}`} />
-            </button>
+          <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 shrink-0">
+            <Radio className="w-3 h-3 text-emerald-500 animate-pulse" />
+            <span>{sourcesCount > 0 ? `${sourcesCount} Live Outlets Active` : 'Connecting Outlets…'}</span>
           </div>
         </nav>
+
+        {/* Source / Channel Filter Strip */}
+        <div
+          aria-label="Filter by Newspaper or Media Channel"
+          className="flex items-center gap-1.5 py-2 border-t border-slate-500/10 overflow-x-auto no-scrollbar"
+        >
+          <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 pr-2">
+            <Newspaper className="w-3 h-3 text-rose-500" />
+            Channels:
+          </span>
+          {SOURCE_GROUPS.map((group) => {
+            const active = activeSourceGroup === group;
+            return (
+              <button
+                key={group}
+                type="button"
+                onClick={() => setActiveSourceGroup(group)}
+                className={`shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer border ${
+                  active
+                    ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-950 dark:border-white shadow-sm'
+                    : 'border-slate-500/20 text-slate-600 dark:text-slate-300 hover:border-rose-500/50 hover:text-rose-500'
+                }`}
+              >
+                {group}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </header>
   );
