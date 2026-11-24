@@ -1,0 +1,354 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Flame, Mail, CheckCircle2, Sparkles, DollarSign, ArrowRight } from 'lucide-react';
+import type { Article } from './types/news';
+import { CATEGORY_MAP } from './data/categories';
+import { useNews } from './context/NewsContext';
+import { useAdMonetization } from './context/AdMonetizationContext';
+import { BreakingTicker } from './components/BreakingTicker';
+import { Header } from './components/Header';
+import { HeroSpotlight } from './components/HeroSpotlight';
+import { ArticleCard } from './components/ArticleCard';
+import { ArticleReaderModal } from './components/ArticleReaderModal';
+import { SearchCommandModal } from './components/SearchCommandModal';
+import { BookmarksDrawer } from './components/BookmarksDrawer';
+import { Footer } from './components/Footer';
+import { AdSlot } from './components/ads/AdSlot';
+import { StickyFooterAd } from './components/ads/StickyFooterAd';
+import { ConsentBanner } from './components/ads/ConsentBanner';
+import { PublisherDashboardModal } from './components/ads/PublisherDashboardModal';
+
+export default function App() {
+  const { articles, activeCategory } = useNews();
+  const { config } = useAdMonetization();
+
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [bookmarksOpen, setBookmarksOpen] = useState(false);
+  const [studioOpen, setStudioOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterDone, setNewsletterDone] = useState(false);
+
+  // Global keyboard shortcuts (Ctrl+K or '/' to open search)
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      } else if (
+        e.key === '/' &&
+        document.activeElement?.tagName !== 'INPUT' &&
+        document.activeElement?.tagName !== 'TEXTAREA'
+      ) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => {
+      setToastMsg((prev) => (prev === msg ? null : prev));
+    }, 3800);
+  };
+
+  const filteredArticles = useMemo(() => {
+    if (activeCategory === 'all') return articles;
+    return articles.filter((a) => a.category === activeCategory);
+  }, [articles, activeCategory]);
+
+  const leadArticle = filteredArticles[0] || articles[0];
+  const secondaryHero = filteredArticles.slice(1, 3);
+  const gridArticles = activeCategory === 'all' ? filteredArticles.slice(3) : filteredArticles;
+
+  const trendingArticles = useMemo(
+    () => [...articles].sort((a, b) => b.views - a.views).slice(0, 5),
+    [articles]
+  );
+
+  const relatedArticles = useMemo(() => {
+    if (!selectedArticle) return [];
+    return articles.filter((a) => a.id !== selectedArticle.id && a.category === selectedArticle.category);
+  }, [articles, selectedArticle]);
+
+  const activeCategoryMeta = CATEGORY_MAP[activeCategory] || CATEGORY_MAP.all;
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setNewsletterDone(true);
+    setNewsletterEmail('');
+    showToast('Subscribed to The Meridian Morning Dispatch!');
+  };
+
+  return (
+    <div className="min-h-screen editorial-mesh grid-backdrop relative">
+      {/* Accessibility Skip Link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:bg-rose-600 focus:text-white focus:font-bold"
+      >
+        Skip to main news content
+      </a>
+
+      {/* Live Breaking Wire & Global Market Sparklines */}
+      <BreakingTicker articles={articles} onSelectArticle={setSelectedArticle} />
+
+      {/* Editorial Masthead & Category Navigation */}
+      <Header
+        onOpenSearch={() => setSearchOpen(true)}
+        onOpenBookmarks={() => setBookmarksOpen(true)}
+        onOpenPublisherStudio={() => setStudioOpen(true)}
+      />
+
+      {/* Main Content */}
+      <main id="main-content" className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-10">
+        {/* Placement 1: Top Leaderboard Ad Banner (Zero-CLS Reserved Height) */}
+        <section aria-label="Featured Sponsorship Banner">
+          <AdSlot
+            placement="top-leaderboard"
+            seed={0}
+            onOpenPublisherStudio={() => setStudioOpen(true)}
+            onAdClickToast={showToast}
+          />
+        </section>
+
+        {/* Hero Section on Front Page, or Category Desk Banner */}
+        {activeCategory === 'all' && leadArticle ? (
+          <HeroSpotlight
+            leadArticle={leadArticle}
+            secondaryArticles={secondaryHero}
+            onSelectArticle={setSelectedArticle}
+          />
+        ) : (
+          <motion.section
+            key={activeCategory}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl border border-slate-500/20 dark:border-white/10 bg-white/80 dark:bg-[#0d1322]/90 p-6 sm:p-8 flex flex-wrap items-center justify-between gap-4"
+          >
+            <div>
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase border ${activeCategoryMeta.badgeClass}`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {activeCategoryMeta.label} Desk
+              </span>
+              <h2 className="mt-3 font-display text-3xl sm:text-5xl text-slate-900 dark:text-white">
+                {activeCategoryMeta.label} Coverage
+              </h2>
+              <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300">
+                {activeCategoryMeta.description}
+              </p>
+            </div>
+            <div className="text-right font-mono text-xs text-slate-500">
+              {filteredArticles.length} English reports available
+            </div>
+          </motion.section>
+        )}
+
+        {/* Primary Two-Column Magazine Layout (8 Cols Feed + 4 Cols Sticky Monetized Sidebar) */}
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          {/* Left 8 Columns: Latest Stories + In-Feed Native Sponsored Revenue Cards */}
+          <section aria-label="Latest News Feed" className="lg:col-span-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-500/20 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2 h-6 rounded-full bg-rose-600" />
+                <h2 className="font-display text-2xl sm:text-3xl tracking-tight text-slate-900 dark:text-white">
+                  {activeCategory === 'all' ? 'Latest Dispatches & Analysis' : `Latest in ${activeCategoryMeta.label}`}
+                </h2>
+              </div>
+              <span className="text-xs font-mono text-slate-500 hidden sm:inline">
+                Updated continuously · English Edition
+              </span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              {gridArticles.map((article, idx) => (
+                <React.Fragment key={article.id}>
+                  <ArticleCard article={article} index={idx} onSelect={setSelectedArticle} />
+                  {/* Placement 4: High-CTR In-Feed Native Sponsored Card woven after 3rd story */}
+                  {idx === 2 && config.enableInFeedNative && (
+                    <AdSlot
+                      placement="in-feed-native"
+                      seed={1}
+                      onOpenPublisherStudio={() => setStudioOpen(true)}
+                      onAdClickToast={showToast}
+                    />
+                  )}
+                  {/* Second native ad unit for longer feeds */}
+                  {idx === 7 && config.enableInFeedNative && (
+                    <AdSlot
+                      placement="in-feed-native"
+                      seed={2}
+                      onOpenPublisherStudio={() => setStudioOpen(true)}
+                      onAdClickToast={showToast}
+                    />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </section>
+
+          {/* Right 4 Columns: High-Viewability Sticky Sidebar with Trending, MPU Ad, Newsletter & Half-Page Ad */}
+          <aside aria-label="Trending and Sponsored Sidebar" className="lg:col-span-4 space-y-6 lg:sticky lg:top-36">
+            {/* Placement 2: High-Viewability Medium Rectangle (300x250) */}
+            <AdSlot
+              placement="sidebar-rectangle"
+              seed={1}
+              onOpenPublisherStudio={() => setStudioOpen(true)}
+              onAdClickToast={showToast}
+            />
+
+            {/* Most Read / Trending Leaderboard */}
+            <div className="rounded-2xl border border-slate-500/20 dark:border-white/10 bg-white dark:bg-[#0e1422] p-5 shadow-sm">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-500/15">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-rose-500" />
+                  Most Read Worldwide
+                </h3>
+                <span className="text-[10px] font-mono text-slate-500">24H</span>
+              </div>
+              <ol className="divide-y divide-slate-500/10">
+                {trendingArticles.map((item, idx) => (
+                  <li key={item.id} className="py-3 first:pt-1 last:pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedArticle(item)}
+                      className="w-full text-left flex items-start gap-3.5 group cursor-pointer"
+                    >
+                      <span className="font-display text-2xl leading-none text-rose-500/70 group-hover:text-rose-500 shrink-0 w-7">
+                        0{idx + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-serif text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 group-hover:text-rose-500 transition-colors line-clamp-2">
+                          {item.title}
+                        </div>
+                        <div className="mt-1 text-[11px] font-mono text-slate-500">
+                          {item.category} · {(item.views / 1000).toFixed(1)}k views
+                        </div>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Free Daily Briefing Newsletter */}
+            <div className="rounded-2xl border border-rose-500/25 bg-gradient-to-br from-rose-600/12 via-amber-500/8 to-transparent dark:from-rose-600/18 dark:via-slate-900 dark:to-slate-950 p-5">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-rose-500">
+                <Mail className="w-4 h-4" />
+                Free Morning Briefing
+              </div>
+              <h3 className="mt-2 font-display text-2xl text-slate-900 dark:text-white leading-tight">
+                Start your day ahead of the global news cycle.
+              </h3>
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Essential English dispatches delivered at 07:00 GMT. Always free, supported by curated brand sponsors.
+              </p>
+              {newsletterDone ? (
+                <div className="mt-4 p-3 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  You’re on the list! Watch your inbox tomorrow morning.
+                </div>
+              ) : (
+                <form onSubmit={handleNewsletterSubmit} className="mt-4 flex gap-2">
+                  <input
+                    type="email"
+                    required
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="you@domain.com"
+                    aria-label="Email address for morning briefing"
+                    className="flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border border-slate-500/25 bg-white dark:bg-[#090d18] text-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 inline-flex items-center gap-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold cursor-pointer transition-colors"
+                  >
+                    Join
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              )}
+            </div>
+
+            {/* Placement 3: High-Yield Right Rail Half-Page / Skyscraper (300x600) */}
+            <AdSlot
+              placement="sidebar-skyscraper"
+              seed={2}
+              onOpenPublisherStudio={() => setStudioOpen(true)}
+              onAdClickToast={showToast}
+            />
+          </aside>
+        </div>
+      </main>
+
+      <Footer onOpenPublisherStudio={() => setStudioOpen(true)} />
+
+      {/* Placement 6: Dismissible Sticky Anchor Footer Ad */}
+      <StickyFooterAd
+        onOpenPublisherStudio={() => setStudioOpen(true)}
+        onAdClickToast={showToast}
+      />
+
+      {/* GDPR / CCPA Google Consent Mode v2 Banner */}
+      <ConsentBanner />
+
+      {/* Full Article Reader Modal (includes In-Article Ad Placement 5) */}
+      <ArticleReaderModal
+        article={selectedArticle}
+        relatedArticles={relatedArticles}
+        onClose={() => setSelectedArticle(null)}
+        onSelectArticle={setSelectedArticle}
+        onOpenPublisherStudio={() => {
+          setSelectedArticle(null);
+          setStudioOpen(true);
+        }}
+        onAdClickToast={showToast}
+      />
+
+      {/* Publisher Ad Revenue & Monetization Studio Modal */}
+      <PublisherDashboardModal open={studioOpen} onClose={() => setStudioOpen(false)} />
+
+      {/* Instant Command Search Modal */}
+      <SearchCommandModal
+        open={searchOpen}
+        articles={articles}
+        onClose={() => setSearchOpen(false)}
+        onSelectArticle={setSelectedArticle}
+      />
+
+      {/* Saved Reading List Drawer */}
+      <BookmarksDrawer
+        open={bookmarksOpen}
+        onClose={() => setBookmarksOpen(false)}
+        onSelectArticle={setSelectedArticle}
+      />
+
+      {/* Live Revenue / Interaction Toast */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-5 right-5 z-50 max-w-sm px-4 py-3 rounded-2xl bg-slate-950/95 text-white border border-emerald-500/40 shadow-2xl flex items-center gap-2.5 text-xs font-semibold"
+          >
+            <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <DollarSign className="w-3.5 h-3.5" />
+            </span>
+            <span>{toastMsg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

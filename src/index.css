@@ -1,0 +1,187 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Instrument Serif", "Newsreader", Georgia, serif;
+  --font-serif: "Newsreader", Georgia, Cambria, serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --bg-page: #f7f4ee;
+  --bg-surface: #ffffff;
+  --bg-elevated: #efeae0;
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --border-strong: rgba(15, 23, 42, 0.2);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent-brand: #e11d48;
+  --accent-gold: #d97706;
+  --accent-cyan: #0284c7;
+}
+
+html.dark {
+  --bg-page: #07090f;
+  --bg-surface: #0e131f;
+  --bg-elevated: #141b2d;
+  --border-subtle: rgba(148, 163, 184, 0.14);
+  --border-strong: rgba(148, 163, 184, 0.28);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-brand: #f43f5e;
+  --accent-gold: #f59e0b;
+  --accent-cyan: #38bdf8;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Editorial Mesh Background Glow */
+.editorial-mesh {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(244, 63, 94, 0.14), transparent 60%),
+    radial-gradient(ellipse 65% 45% at 85% 0%, rgba(56, 189, 248, 0.12), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(245, 158, 11, 0.08), transparent 60%);
+}
+
+html:not(.dark) .editorial-mesh {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(225, 29, 72, 0.06), transparent 60%),
+    radial-gradient(ellipse 65% 45% at 85% 0%, rgba(2, 132, 199, 0.06), transparent 58%);
+}
+
+/* Subtle architectural grid texture */
+.grid-backdrop {
+  background-size: 42px 42px;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+}
+
+html:not(.dark) .grid-backdrop {
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
+
+/* Infinite Seamless Breaking News Ticker */
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 46s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Subtle shimmer for zero-CLS ad loading containers */
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.ad-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.06) 25%,
+    rgba(148, 163, 184, 0.14) 50%,
+    rgba(148, 163, 184, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2.2s ease-in-out infinite;
+}
+
+/* Audio equalizer bars for Text-to-Speech player */
+@keyframes eq-bounce {
+  0%, 100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.eq-bar {
+  transform-origin: bottom;
+  animation: eq-bounce 0.75s ease-in-out infinite;
+}
+
+/* Custom sleek scrollbar */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 63, 94, 0.55);
+}
+
+/* Respect accessibility reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .ad-shimmer,
+  .eq-bar {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Editorial Drop Cap for full articles */
+.article-dropcap::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 4.1rem;
+  line-height: 0.82;
+  padding-right: 0.7rem;
+  padding-top: 0.2rem;
+  font-weight: 400;
+  color: var(--accent-brand);
+}

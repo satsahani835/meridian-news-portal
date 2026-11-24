@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Engineered mass timber museum pavilion bathed in skylight beams">
+  <defs>
+    <linearGradient id="galleryBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c1410"/>
+      <stop offset="55%" stop-color="#2e2017"/>
+      <stop offset="100%" stop-color="#120d0a"/>
+    </linearGradient>
+    <linearGradient id="sunBeam" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef3c7" stop-opacity="0.52"/>
+      <stop offset="55%" stop-color="#f59e0b" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="timberRib" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="48%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <linearGradient id="stoneFloor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b2f28"/>
+      <stop offset="100%" stop-color="#17120f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#galleryBg)"/>
+  <!-- Skylight Glass Apex -->
+  <polygon points="440,0 760,0 680,120 520,120" fill="#fde68a" opacity="0.28"/>
+  <!-- Sweeping Cross-Laminated Mass Timber Vault Ribs -->
+  <g fill="none" stroke="url(#timberRib)" stroke-linecap="round">
+    <path d="M40 530 Q300 40 600 90 Q900 40 1160 530" stroke-width="18" opacity="0.92"/>
+    <path d="M130 520 Q360 95 600 132 Q840 95 1070 520" stroke-width="14" opacity="0.82"/>
+    <path d="M215 512 Q415 148 600 172 Q785 148 985 512" stroke-width="11" opacity="0.72"/>
+    <path d="M295 504 Q465 198 600 214 Q735 198 905 504" stroke-width="9" opacity="0.62"/>
+    <path d="M370 498 Q505 245 600 256 Q695 245 830 498" stroke-width="7" opacity="0.52"/>
+    <path d="M440 492 Q538 292 600 298 Q662 292 760 492" stroke-width="5.5" opacity="0.42"/>
+  </g>
+  <!-- Interlocking Acoustic Timber Lattice Purins -->
+  <g stroke="#fbbf24" stroke-opacity="0.22" stroke-width="2">
+    <line x1="175" y1="305" x2="1025" y2="305"/>
+    <line x1="255" y1="230" x2="945" y2="230"/>
+    <line x1="365" y1="162" x2="835" y2="162"/>
+  </g>
+  <!-- Limestone Gallery Floor -->
+  <polygon points="0,505 1200,505 1200,675 0,675" fill="url(#stoneFloor)"/>
+  <line x1="0" y1="505" x2="1200" y2="505" stroke="#fbbf24" stroke-opacity="0.3" stroke-width="1.5"/>
+  <!-- Diagonal Dramatic Skylight Beams -->
+  <polygon points="480,0 640,0 990,675 680,675" fill="url(#sunBeam)"/>
+  <polygon points="640,0 740,0 1160,675 1010,675" fill="url(#sunBeam)" opacity="0.6"/>
+  <!-- Minimalist Sculptural Pedestal & Gallery Visitors for Scale -->
+  <rect x="556" y="458" width="88" height="48" fill="#e7e5e4" opacity="0.88"/>
+  <ellipse cx="600" cy="434" rx="22" ry="26" fill="#d97706" stroke="#fef3c7" stroke-width="1.5"/>
+  <g fill="#0f0a08" opacity="0.86">
+    <circle cx="448" cy="466" r="7"/><rect x="441" y="474" width="14" height="36" rx="4"/>
+    <circle cx="766" cy="470" r="6.5"/><rect x="760" y="478" width="12" height="32" rx="4"/>
+    <circle cx="788" cy="468" r="7"/><rect x="781" y="476" width="14" height="34" rx="4"/>
+  </g>
+</svg>

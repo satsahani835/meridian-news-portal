@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Deep-space orbiter scanning cryogenic plumes above Jupiter moon Europa">
+  <defs>
+    <radialGradient id="spaceBg" cx="72%" cy="28%" r="75%">
+      <stop offset="0%" stop-color="#152445"/>
+      <stop offset="45%" stop-color="#070d1d"/>
+      <stop offset="100%" stop-color="#02040a"/>
+    </radialGradient>
+    <radialGradient id="jupiter" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fcd34d"/>
+      <stop offset="35%" stop-color="#d97706"/>
+      <stop offset="72%" stop-color="#7c2d12"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="europaSurface" cx="48%" cy="18%" r="72%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="32%" stop-color="#93c5fd"/>
+      <stop offset="68%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0b1120"/>
+    </radialGradient>
+    <linearGradient id="plume" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.92"/>
+      <stop offset="55%" stop-color="#38bdf8" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="1200" height="675" fill="url(#spaceBg)"/>
+  <!-- Starfield -->
+  <g fill="#f8fafc">
+    <circle cx="84" cy="96" r="1.4" opacity="0.8"/><circle cx="176" cy="212" r="1.1" opacity="0.6"/>
+    <circle cx="240" cy="64" r="1.7" opacity="0.9"/><circle cx="364" cy="148" r="1.2" opacity="0.7"/>
+    <circle cx="482" cy="88" r="1.5" opacity="0.8"/><circle cx="590" cy="176" r="1.1" opacity="0.5"/>
+    <circle cx="672" cy="64" r="1.8" opacity="0.9"/><circle cx="814" cy="122" r="1.2" opacity="0.6"/>
+    <circle cx="1084" cy="116" r="1.6" opacity="0.85"/><circle cx="1128" cy="284" r="1.3" opacity="0.6"/>
+    <circle cx="96" cy="340" r="1.2" opacity="0.5"/><circle cx="418" cy="264" r="1.4" opacity="0.7"/>
+  </g>
+  <!-- Distant Jupiter crescent -->
+  <g transform="translate(940, 175)">
+    <circle r="118" fill="url(#jupiter)" opacity="0.88"/>
+    <path d="M-112 -22 Q0 -44 112 -18" stroke="#fef3c7" stroke-width="6" fill="none" opacity="0.28"/>
+    <path d="M-116 14 Q0 -6 116 18" stroke="#f59e0b" stroke-width="9" fill="none" opacity="0.32"/>
+    <path d="M-98 52 Q0 38 98 54" stroke="#fed7aa" stroke-width="5" fill="none" opacity="0.22"/>
+    <circle cx="44" cy="-16" r="122" fill="#030712" opacity="0.78"/>
+  </g>
+  <!-- Cryogenic Water-Vapor Plumes -->
+  <path d="M475 510 C455 370 400 245 340 160 C430 220 488 320 508 510 Z" fill="url(#plume)" filter="url(#glow)"/>
+  <path d="M510 505 C500 330 475 210 462 115 C512 200 546 330 554 505 Z" fill="url(#plume)" opacity="0.9"/>
+  <path d="M540 512 C560 365 600 250 645 180 C618 285 595 390 578 512 Z" fill="url(#plume)" filter="url(#glow)"/>
+  <!-- Europa Curved Icy Horizon -->
+  <ellipse cx="580" cy="835" rx="760" ry="375" fill="url(#europaSurface)"/>
+  <!-- Tectonic Red-Amber Lineae Fractures on Europa's Ice Crust -->
+  <g fill="none" stroke="#b45309" stroke-opacity="0.45" stroke-width="2.4">
+    <path d="M110 595 Q380 510 720 555 T1140 615"/>
+    <path d="M220 655 Q520 500 845 540"/>
+    <path d="M460 470 Q545 550 660 660" stroke="#7dd3fc" stroke-opacity="0.55" stroke-width="2"/>
+    <path d="M310 530 Q510 495 795 620" stroke="#f59e0b" stroke-opacity="0.3"/>
+  </g>
+  <!-- Bright Rim Atmosphere Glow -->
+  <path d="M-40 620 Q580 398 1240 620" fill="none" stroke="#7dd3fc" stroke-width="3.5" opacity="0.75" filter="url(#glow)"/>
+  <!-- Orbital Telemetry Trajectory Arc -->
+  <path d="M120 385 Q580 120 1090 420" fill="none" stroke="#38bdf8" stroke-dasharray="6 7" stroke-width="1.5" opacity="0.48"/>
+  <!-- Sleek Deep-Space Robotic Probe -->
+  <g transform="translate(650, 255) rotate(-14)">
+    <!-- Solar arrays -->
+    <rect x="-150" y="-12" width="115" height="24" rx="2" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
+    <line x1="-120" y1="-12" x2="-120" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <line x1="-90" y1="-12" x2="-90" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <line x1="-60" y1="-12" x2="-60" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <rect x="35" y="-12" width="115" height="24" rx="2" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
+    <line x1="65" y1="-12" x2="65" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <line x1="95" y1="-12" x2="95" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <line x1="125" y1="-12" x2="125" y2="12" stroke="#7dd3fc" stroke-opacity="0.5"/>
+    <!-- Spacecraft core bus -->
+    <polygon points="-24,-18 24,-18 32,0 24,18 -24,18 -32,0" fill="#f59e0b" stroke="#fef3c7" stroke-width="1.5"/>
+    <!-- High-gain dish -->
+    <ellipse cx="0" cy="-26" rx="26" ry="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="0" y1="-26" x2="0" y2="-40" stroke="#f8fafc" stroke-width="2"/>
+    <circle cx="0" cy="-42" r="3" fill="#38bdf8"/>
+    <!-- Spectrometer scan cone -->
+    <polygon points="-8,18 8,18 65,165 -95,165" fill="#38bdf8" opacity="0.14"/>
+  </g>
+</svg>
