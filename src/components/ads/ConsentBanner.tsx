@@ -49,7 +49,7 @@ export const ConsentBanner: React.FC = () => {
                 Free News Supported by Google Ads
               </h2>
               <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                THE MERIDIAN is 100% free to read. We and Google AdSense use cookies to deliver relevant ads and
+                MRDN News Portal is 100% free to read. We and Google AdSense use cookies to deliver relevant ads and
                 remember your reading preferences.
               </p>
               <div className="mt-3.5 flex flex-wrap items-center gap-2">

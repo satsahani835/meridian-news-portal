@@ -110,7 +110,7 @@ export default function App() {
     if (!newsletterEmail.trim()) return;
     setNewsletterDone(true);
     setNewsletterEmail('');
-    showToast('Subscribed to The Meridian Daily Briefing!');
+    showToast('Subscribed to the MRDN Daily Briefing!');
   };
 
   const resetAllFilters = () => {

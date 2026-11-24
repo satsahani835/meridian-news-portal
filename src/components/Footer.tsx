@@ -17,17 +17,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal, onOpenDirectory }) 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid md:grid-cols-12 gap-10 pb-10 border-b border-slate-500/15">
           <div className="md:col-span-5 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-              <span className="font-display text-3xl tracking-tight text-slate-900 dark:text-white">
-                THE MERIDIAN
-              </span>
+            <div className="inline-flex items-center rounded-2xl dark:bg-white/95 dark:px-4 dark:py-2 dark:shadow-md">
+              <img
+                src="/images/mrdn-logo.png"
+                alt="MRDN News Portal — Trusted News. Anytime. Anywhere."
+                width={176}
+                height={88}
+                className="h-14 sm:h-16 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-md">
-              Free 24/7 live global news portal updating automatically every 5 minutes across 60+ outlets — including
-              Nepali English e-newspapers, New York Times, Times of India, NDTV Profit, Fox News, Newsmax, OANN,
-              New York Post, WSJ Opinion, National Review, Daily Wire, Breitbart, The Telegraph, Daily Mail, GB News,
-              Le Figaro, Die Welt, Bild, National Post, Sky News Australia, and more.
+              <strong>MRDN News Portal</strong> — Trusted News. Anytime. Anywhere. Free 24/7 live global news updating
+              automatically every 5 minutes across 60+ outlets — including Nepali English e-newspapers, New York Times,
+              Times of India, NDTV Profit, Fox News, Newsmax, OANN, New York Post, WSJ Opinion, National Review, Daily
+              Wire, Breitbart, The Telegraph, Daily Mail, GB News, Le Figaro, Die Welt, Bild, National Post, Sky News
+              Australia, and more.
             </p>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
               <span className="inline-flex items-center gap-1.5">
@@ -102,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal, onOpenDirectory }) 
         </div>
 
         <div className="pt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} THE MERIDIAN. Free Global News Portal.</span>
+          <span>© {new Date().getFullYear()} MRDN News Portal. Trusted News. Anytime. Anywhere.</span>
           <div className="flex flex-wrap items-center gap-4">
             <button type="button" onClick={() => onOpenLegal('about')} className="hover:text-rose-500 cursor-pointer">
               About Us

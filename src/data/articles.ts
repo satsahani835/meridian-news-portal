@@ -15,9 +15,9 @@ export const EDITORIAL_ARTICLES: Article[] = [
       'High-efficiency computing hubs pair optical interconnects with renewable grids to meet surging enterprise demand.',
     category: 'technology',
     author: {
-      name: 'Meridian Tech Desk',
+      name: 'MRDN Tech Desk',
       role: 'Technology Desk',
-      avatarInitials: 'MT',
+      avatarInitials: 'MR',
       location: 'Global',
     },
     publishedAt: hoursAgo(1),
@@ -26,7 +26,7 @@ export const EDITORIAL_ARTICLES: Article[] = [
     imageCaption: 'Modern glass supercomputing facility integrated with renewable energy infrastructure.',
     isFeatured: true,
     isBreaking: true,
-    sourceName: 'The Meridian',
+    sourceName: 'MRDN News',
     sourceGroup: 'New York Times',
     tags: ['AI', 'Technology', 'Infrastructure'],
     content: [
@@ -45,9 +45,9 @@ export const EDITORIAL_ARTICLES: Article[] = [
       'Investors across Kathmandu, Mumbai, and New York monitor inflation prints, treasury yields, and earnings momentum.',
     category: 'business',
     author: {
-      name: 'Meridian Markets Desk',
+      name: 'MRDN Markets Desk',
       role: 'Markets & Profit',
-      avatarInitials: 'MM',
+      avatarInitials: 'MR',
       location: 'Mumbai & New York',
     },
     publishedAt: hoursAgo(2),

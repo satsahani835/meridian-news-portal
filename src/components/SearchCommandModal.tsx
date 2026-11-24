@@ -48,7 +48,7 @@ export const SearchCommandModal: React.FC<SearchCommandModalProps> = ({
         <motion.div
           role="dialog"
           aria-modal="true"
-          aria-label="Search THE MERIDIAN"
+          aria-label="Search MRDN News Portal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

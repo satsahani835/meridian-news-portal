@@ -280,7 +280,7 @@ async function fetchSingleFeed(feed, timeoutMs = 3800) {
           tags: [feed.source, feed.group, feed.category],
           content: [
             cleanDesc,
-            `This live report is syndicated directly from ${feed.source} (${feed.group}) as part of THE MERIDIAN's 24/7 automated newsroom.`,
+            `This live report is syndicated directly from ${feed.source} (${feed.group}) as part of MRDN News Portal's 24/7 automated newsroom.`,
             `Use the button below to read the full original coverage directly on ${feed.source}.`,
           ],
           views: 1400 + ((title.length * 137 + idx * 419 + feed.source.length * 91) % 9200),

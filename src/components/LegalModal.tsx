@@ -11,10 +11,10 @@ interface LegalModalProps {
 
 export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
   const titles: Record<Exclude<LegalPageId, null>, { title: string; icon: React.ReactNode }> = {
-    about: { title: 'About THE MERIDIAN', icon: <Info className="w-4 h-4 text-sky-500" /> },
+    about: { title: 'About MRDN News Portal', icon: <Info className="w-4 h-4 text-sky-500" /> },
     privacy: { title: 'Privacy Policy & Google AdSense Disclosure', icon: <ShieldCheck className="w-4 h-4 text-emerald-500" /> },
     terms: { title: 'Terms of Use & Editorial Disclaimer', icon: <FileText className="w-4 h-4 text-amber-500" /> },
-    contact: { title: 'Contact THE MERIDIAN', icon: <Mail className="w-4 h-4 text-rose-500" /> },
+    contact: { title: 'Contact MRDN News Portal', icon: <Mail className="w-4 h-4 text-rose-500" /> },
   };
 
   return (
@@ -56,17 +56,18 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
               {page === 'about' && (
                 <>
                   <p>
-                    <strong>THE MERIDIAN</strong> is an independent, 100% free English news portal aggregating real-time
-                    daily journalism from leading Nepali English e-newspapers (<em>The Kathmandu Post, OnlineKhabar,
-                    Nepali Times, Khabarhub, The Rising Nepal</em>), major Indian &amp; business desks (<em>Times of India,
-                    NDTV Profit, NDTV</em>), global broadsheets (<em>The New York Times, The Wall Street Journal</em>),
-                    and US conservative &amp; right-leaning media channels (<em>Fox News, Fox Business, New York Post,
-                    The Daily Wire, National Review, Washington Examiner, Breitbart</em>).
+                    <strong>MRDN News Portal</strong> (<em>Trusted News. Anytime. Anywhere.</em>) is an independent,
+                    100% free global news portal aggregating real-time daily coverage from 60+ leading outlets —
+                    including Nepali English e-newspapers (<em>The Kathmandu Post, OnlineKhabar, Nepali Times,
+                    Khabarhub, The Rising Nepal</em>), major Indian &amp; markets desks (<em>Times of India, NDTV
+                    Profit, NDTV</em>), US broadcast &amp; print networks (<em>Fox News, Fox Business, Newsmax, OANN,
+                    New York Post, The New York Times, Wall Street Journal, National Review, Reason, Daily Wire,
+                    Breitbart</em>), UK media (<em>The Telegraph, Daily Mail, GB News, TalkTV, The Spectator</em>), and
+                    international channels across Europe, Canada, and Australia.
                   </p>
                   <p>
-                    Our platform updates automatically every few minutes around the clock so readers across Nepal, India,
-                    North America, and Europe can follow breaking headlines, financial markets, politics, technology, and
-                    sports in one fast, distraction-free English interface.
+                    Our platform updates automatically every few minutes around the clock so readers worldwide can
+                    follow breaking headlines, markets, politics, technology, and sports in one fast, free interface.
                   </p>
                 </>
               )}
@@ -74,14 +75,14 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
               {page === 'privacy' && (
                 <>
                   <p>
-                    <strong>Effective Date:</strong> {new Date().getFullYear()} — THE MERIDIAN respects your privacy.
-                    We do not sell personal data or require user registration to read news.
+                    <strong>Effective Date:</strong> {new Date().getFullYear()} — MRDN News Portal respects your
+                    privacy. We do not sell personal data or require user registration to read news.
                   </p>
                   <p>
                     <strong>Google AdSense &amp; Third-Party Cookies:</strong> This website uses Google AdSense
                     (Publisher ID <code className="font-mono text-xs">ca-pub-7994439676148929</code>) to display
-                    advertisements that keep journalism free. Third-party vendors, including Google, use cookies to serve
-                    ads based on a user&apos;s prior visits to this website or other websites on the internet.
+                    advertisements that keep news free. Third-party vendors, including Google, use cookies to serve ads
+                    based on a user&apos;s prior visits to this website or other websites on the internet.
                   </p>
                   <p>
                     Google&apos;s use of advertising cookies enables it and its partners to serve ads to our readers based
@@ -107,14 +108,13 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
               {page === 'terms' && (
                 <>
                   <p>
-                    THE MERIDIAN provides curated live headlines, summaries, and direct outbound attribution links to
-                    official public RSS feeds published by independent news organizations.
+                    MRDN News Portal provides curated live headlines, summaries, and direct outbound attribution links
+                    to official public RSS feeds published by independent news organizations.
                   </p>
                   <p>
                     All trademarks, headlines, photographs, and full articles remain the intellectual property of their
-                    respective publishers (including The Kathmandu Post, OnlineKhabar, Nepali Times, The New York Times,
-                    Times of India, NDTV Profit, Fox News, New York Post, Wall Street Journal, and others). Every dispatch
-                    clearly attributes its original source and links directly to the publisher&apos;s full story.
+                    respective publishers. Every dispatch clearly attributes its original source and links directly to
+                    the publisher&apos;s full story.
                   </p>
                   <p>
                     Market figures and financial news headlines are provided for informational purposes only and do not
@@ -126,7 +126,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
               {page === 'contact' && (
                 <>
                   <p>
-                    Have a news tip, publisher RSS inquiry, copyright takedown request, or technical feedback? Reach the
+                    Have a news tip, publisher RSS inquiry, copyright request, or technical feedback? Reach the MRDN
                     editorial &amp; operations desk directly:
                   </p>
                   <div className="p-4 rounded-2xl border border-slate-500/20 bg-slate-50 dark:bg-[#0f1626] space-y-1.5 font-mono text-xs">
@@ -134,10 +134,10 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
                       <strong>Editorial &amp; Support:</strong> satsahani0@gmail.com
                     </div>
                     <div>
-                      <strong>Website:</strong> https://meridian-news-portal.vercel.app
+                      <strong>Website:</strong> https://mrdnews.vercel.app
                     </div>
                     <div>
-                      <strong>Authorized Sellers:</strong> https://meridian-news-portal.vercel.app/ads.txt
+                      <strong>Authorized Sellers:</strong> https://mrdnews.vercel.app/ads.txt
                     </div>
                   </div>
                 </>

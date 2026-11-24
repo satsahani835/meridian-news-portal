@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Center: Masthead */}
+          {/* Center: Official MRDN News Portal Logo */}
           <button
             type="button"
             onClick={() => {
@@ -76,17 +76,19 @@ export const Header: React.FC<HeaderProps> = ({
               setActiveSourceName(null);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex flex-col items-start lg:items-center group cursor-pointer"
+            aria-label="MRDN News Portal — Go to Front Page"
+            className="flex items-center justify-center group cursor-pointer focus:outline-none"
           >
-            <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.8)] group-hover:scale-125 transition-transform" />
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] leading-none tracking-tight text-slate-900 dark:text-white">
-                THE MERIDIAN
-              </h1>
+            <div className="rounded-2xl transition-transform duration-300 group-hover:scale-[1.03] dark:bg-white/95 dark:px-3.5 dark:py-1 dark:shadow-lg dark:shadow-black/30 dark:ring-1 dark:ring-white/20">
+              <img
+                src="/images/mrdn-logo.png"
+                alt="MRDN News Portal — Trusted News. Anytime. Anywhere."
+                width={156}
+                height={78}
+                className="h-12 sm:h-14 w-auto object-contain select-none"
+              />
             </div>
-            <span className="hidden sm:block text-[9px] font-mono uppercase tracking-[0.34em] text-slate-500 dark:text-slate-400 mt-0.5">
-              Live Independent Global News Portal
-            </span>
+            <span className="sr-only">MRDN News Portal</span>
           </button>
 
           {/* Right: Reader Controls */}
