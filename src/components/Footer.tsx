@@ -17,14 +17,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal, onOpenDirectory }) 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid md:grid-cols-12 gap-10 pb-10 border-b border-slate-500/15">
           <div className="md:col-span-5 space-y-4">
-            <div className="inline-flex items-center rounded-2xl dark:bg-white/95 dark:px-4 dark:py-2 dark:shadow-md">
-              <img
-                src="/images/mrdn-logo.png"
-                alt="MRDN News Portal — Trusted News. Anytime. Anywhere."
-                width={176}
-                height={88}
-                className="h-14 sm:h-16 w-auto object-contain"
-              />
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+              <span className="font-display text-4xl tracking-[0.1em] text-slate-900 dark:text-white leading-none">
+                MRDN
+              </span>
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-md">
               <strong>MRDN News Portal</strong> — Trusted News. Anytime. Anywhere. Free 24/7 live global news updating
