@@ -26,14 +26,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/ads.txt",
-      "destination": "/ads.txt"
-    },
-    {
       "source": "/((?!api/|ads\\.txt|assets/|images/).*)",
       "destination": "/index.html"
     }
