@@ -117,6 +117,13 @@ export const LegalModal: React.FC<LegalModalProps> = ({ page, onClose }) => {
                     the publisher&apos;s full story.
                   </p>
                   <p>
+                    <strong>Affiliate Disclosure:</strong> To keep MRDN News Portal 100% free without subscriptions or
+                    paywalls, select partner recommendation cards on this site contain affiliate referral links (such as
+                    VPN, financial charts, international money transfer, travel, and cloud hosting partners). If you
+                    click a partner link and sign up or make a purchase, MRDN may earn a commission at no extra cost to
+                    you.
+                  </p>
+                  <p>
                     Market figures and financial news headlines are provided for informational purposes only and do not
                     constitute investment advice.
                   </p>

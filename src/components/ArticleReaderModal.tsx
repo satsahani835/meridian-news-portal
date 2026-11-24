@@ -17,6 +17,8 @@ import type { Article } from '../types/news';
 import { CATEGORY_MAP } from '../data/categories';
 import { useNews } from '../context/NewsContext';
 import { AdBanner } from './ads/AdBanner';
+import { AffiliateCard } from './AffiliateCard';
+import { getOffersForCategory } from '../data/affiliates';
 
 interface ArticleReaderModalProps {
   article: Article | null;
@@ -330,6 +332,11 @@ export const ArticleReaderModal: React.FC<ArticleReaderModalProps> = ({
                     </a>
                   </div>
                 )}
+
+                {/* Desk-Matched Affiliate Partner Recommendation */}
+                <div className="mt-7 font-sans">
+                  <AffiliateCard offer={getOffersForCategory(article.category, 1)[0]} variant="inline" />
+                </div>
 
                 {/* Reader Discussion */}
                 <section className="mt-10 pt-8 border-t border-slate-500/15">

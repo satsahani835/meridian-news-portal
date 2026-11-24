@@ -16,6 +16,8 @@ import { Footer } from './components/Footer';
 import { LegalModal, type LegalPageId } from './components/LegalModal';
 import { AdBanner } from './components/ads/AdBanner';
 import { ConsentBanner } from './components/ads/ConsentBanner';
+import { AffiliateCard } from './components/AffiliateCard';
+import { getOffersForCategory } from './data/affiliates';
 
 const PAGE_SIZE = 24;
 
@@ -104,6 +106,7 @@ export default function App() {
   }, [articles, selectedArticle]);
 
   const activeCategoryMeta = CATEGORY_MAP[activeCategory] || CATEGORY_MAP.all;
+  const deskOffers = useMemo(() => getOffersForCategory(activeCategory, 2), [activeCategory]);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,7 +261,8 @@ export default function App() {
                     <React.Fragment key={article.id}>
                       <ArticleCard article={article} index={idx} onSelect={setSelectedArticle} />
                       {idx === 3 && (
-                        <div className="sm:col-span-2">
+                        <div className="sm:col-span-2 space-y-4">
+                          <AffiliateCard offer={deskOffers[1] || deskOffers[0]} variant="inline" />
                           <AdBanner
                             adSlot={import.meta.env.VITE_ADSENSE_SLOT_INFEED}
                             format="fluid"
@@ -330,6 +334,9 @@ export default function App() {
                 ))}
               </ol>
             </div>
+
+            {/* Desk-Matched High-Yield Affiliate Partner Card */}
+            <AffiliateCard offer={deskOffers[0]} variant="sidebar" />
 
             {/* Free Daily Morning Briefing Newsletter */}
             <div className="rounded-2xl border border-rose-500/25 bg-gradient-to-br from-rose-600/12 via-amber-500/8 to-transparent dark:from-rose-600/18 dark:via-slate-900 dark:to-slate-950 p-5">
